@@ -1,5 +1,6 @@
 def multiply(a: int, b: int) -> int:
     return a * b
-
-c = multiply(6,7)
+a = 6
+b = 7
+c = multiply(a,b)
 print(c)

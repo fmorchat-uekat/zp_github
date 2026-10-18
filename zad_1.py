@@ -1,5 +1,7 @@
 def greeting(name: str, surname: str) -> str:
     return "Cześć " + name + " " + surname + "!"
 
-wynik = greeting("Filip", "Morchat")
+name = "Filip"
+surname = "Morchat"
+wynik = greeting(name, surname)
 print(wynik)
