@@ -2,6 +2,7 @@ import json
 import requests
 import argparse
 
+
 class Brewery:
     id: str
     name: str
@@ -21,15 +22,51 @@ class Brewery:
     street: str
 
     def __str__(self):
-        return "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s" % (self.id, self.name, self.brewery_type, self.address_1, self.address_2, self.address_3, self.city, self.state_province, self.postal_code, self.country, self.longitude, self.latitude, self.phone, self.website_url, self.state, self.street)
+        return ("%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s, "
+                "%s"
+                %
+                (self.id,
+                 self.name,
+                 self.brewery_type,
+                 self.address_1,
+                 self.address_2,
+                 self.address_3,
+                 self.city,
+                 self.state_province,
+                 self.postal_code,
+                 self.country,
+                 self.longitude,
+                 self.latitude,
+                 self.phone,
+                 self.website_url,
+                 self.state,
+                 self.street))
+
 
 def get_breweries(city: str):
     print(city)
     brewery_list: list = []
     if city != "None":
-        response = requests.get("https://api.openbrewerydb.org/v1/breweries?by_city=%s&per_page=20" % city)
+        response = (requests.get
+                    ("https://api.openbrewerydb.org/v1/breweries?by_city=%s&per_page=20"  # za długi link aby nie wyrzucało błedów
+                     % city))
     else:
-        response = requests.get("https://api.openbrewerydb.org/v1/breweries?per_page=20")
+        response = (requests.get
+                    ("https://api.openbrewerydb.org/v1/breweries?per_page=20"))
     if response.status_code == 200:
         data = response.json()
         for brewery in data:
@@ -53,6 +90,7 @@ def get_breweries(city: str):
             brewery_list.append(brew)
     for brewery in brewery_list:
         print(brewery.__str__())
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--city', nargs='?', default='None')
