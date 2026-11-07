@@ -5,5 +5,6 @@ def list_every_other(numbers):
         if i % 2 == 0:
             print(number)
 
+
 numbers = range(10)
 list_every_other(numbers)
