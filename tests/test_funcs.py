@@ -43,11 +43,16 @@ def test_flatten():
 
 
 def test_freq():
-    assert funcs.word_frequencies("To be or not to be") == {"to": 2, "be": 2, "or": 1, "not": 1}
-    assert funcs.word_frequencies("Hello, hello!") == {"hello": 2}
-    assert funcs.word_frequencies("") == {}
-    assert funcs.word_frequencies("Python Python python") == {"python": 3}
-    assert funcs.word_frequencies("Ala ma kota, a kot ma ale") == {'a': 1, 'ala': 1, 'ale': 1, 'kot': 1, 'kota': 1, 'ma': 2}
+    assert (funcs.word_frequencies("To be or not to be") ==
+            {"to": 2, "be": 2, "or": 1, "not": 1})
+    assert (funcs.word_frequencies("Hello, hello!") ==
+            {"hello": 2})
+    assert (funcs.word_frequencies("") ==
+            {})
+    assert (funcs.word_frequencies("Python Python python") ==
+            {"python": 3})
+    assert (funcs.word_frequencies("Ala ma kota, a kot ma ale") ==
+            {'a': 1, 'ala': 1, 'ale': 1, 'kot': 1, 'kota': 1, 'ma': 2})
 
 
 def test_prime():
