@@ -1,6 +1,10 @@
+import string
+
+
 def is_palindrome(text: str) -> bool:
-    i, j = 0, len(text) - 1
     text = text.lower()
+    text = "".join(text.split())
+    i, j = 0, len(text) - 1
 
     while i < j:
         if text[i] != text[j]:
@@ -11,7 +15,7 @@ def is_palindrome(text: str) -> bool:
 
 
 def fibonacci(n: int) -> int:
-    if n == 0:
+    if n <= 0:
         return 0
     elif n == 1:
         return 1
@@ -31,7 +35,7 @@ def count_vowels(text: str) -> int:
     i, j = 0, len(text)
     res = 0
     text = text.lower()
-    vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+    vowels = ['a', 'e', 'i', 'o', 'u', 'y', 'ó', 'ą', 'ę']
     while i < j:
         if text[i] in vowels:
             res = res + 1
@@ -40,9 +44,9 @@ def count_vowels(text: str) -> int:
 
 
 def calculate_discount(price: float, discount: float) -> float:
-    if discount < 1 or discount > 0:
+    if discount > 1 or discount < 0:
         return ValueError
-    return price * discount
+    return price - (price * discount)
 
 
 def flatten_list(nested_list: list) -> list:
@@ -64,7 +68,9 @@ def flatten_list(nested_list: list) -> list:
 def word_frequencies(text: str) -> dict:
     words = text.lower().split()
     end_dict = {}
+    translator = str.maketrans('', '', string.punctuation)
     for word in words:
+        word = word.translate(translator)
         if word in end_dict:
             end_dict[word] = end_dict[word] + 1
         else:
@@ -73,3 +79,11 @@ def word_frequencies(text: str) -> dict:
 
 
 def is_prime(n: int) -> bool:
+    if n < 2:
+        return 0
+    i = 2
+    while i < n:
+        if n % i == 0:
+            return 0
+        i = i + 1
+    return 1
