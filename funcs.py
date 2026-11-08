@@ -53,8 +53,8 @@ def flatten_list(nested_list: list) -> list:
             end_list.append(nested_list[i])
         else:
             temp_list = flatten_list(nested_list[i])
-            k, l = 0, len(temp_list)
-            while k < l:
+            k, h = 0, len(temp_list)
+            while k < h:
                 end_list.append(temp_list[k])
                 k = k + 1
         i = i + 1
@@ -62,4 +62,14 @@ def flatten_list(nested_list: list) -> list:
 
 
 def word_frequencies(text: str) -> dict:
-    words = text.lower.split()
+    words = text.lower().split()
+    end_dict = {}
+    for word in words:
+        if word in end_dict:
+            end_dict[word] = end_dict[word] + 1
+        else:
+            end_dict[word] = 1
+    return end_dict
+
+
+def is_prime(n: int) -> bool:
