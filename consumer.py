@@ -1,65 +1,64 @@
-import json
+import sqlite3
 import time
 import uuid
-from filelock import FileLock
-
-QUEUE_FILE = "work.txt"
-LOCK_FILE = "work.txt.lock"
 
 CONSUMER_ID = str(uuid.uuid4())[:8]
 
 CHECK_INTERVAL = 5
 TASK_DURATION = 2
 
+con = sqlite3.connect('database.db')
+cur = con.cursor()
+
 
 def get_task():
-    with FileLock(LOCK_FILE):
-        try:
-            with open(QUEUE_FILE, "r", encoding="utf-8") as file:
-                tasks = [
-                    json.loads(line)
-                    for line in file
-                    if line.strip()
-                ]
-        except FileNotFoundError:
-            return None
+    cur.execute("""
+                SELECT id, task, status
+                FROM tasks
+                WHERE status = 'pending'
+                LIMIT 1
+            """)
+    task = cur.fetchone()
 
-        for task in tasks:
-            if task["status"] == "pending":
-                task["status"] = "in_progress"
-                task["consumer_id"] = CONSUMER_ID
-                print("Picked up: "+ task["id"])
-                with open(QUEUE_FILE, "w") as file:
-                    for item in tasks:
-                        file.write(
-                            json.dumps(item) + "\n"
-                        )
-                return task
-    return None
+    if task is None:
+        return None
+
+    task_id, task_name, status = task
+    cur.execute("""
+                UPDATE tasks
+                SET status = 'in_progress',
+                    consumer_id = ?
+                WHERE id = ?
+                  AND status = 'pending'
+            """, (CONSUMER_ID, task_id))
+    if cur.rowcount != 1:
+        return None
+
+    con.commit()
+    print("Picked up:", task_id)
+    return {
+        "id": task_id,
+        "task": task_name,
+        "status": "in_progress",
+        "consumer_id": CONSUMER_ID
+    }
 
 
 def finish_task(task_id):
-    with FileLock(LOCK_FILE):
-        with open(QUEUE_FILE, "r") as file:
-            tasks = [
-                json.loads(line)
-                for line in file
-                if line.strip()
-            ]
+    cur.execute("""
+                UPDATE tasks
+                SET status = 'done'
+                WHERE id = ?
+                  AND consumer_id = ?
+                  AND status = 'in_progress'
+            """, (task_id, CONSUMER_ID))
 
-        for task in tasks:
-            if (
-                task["id"] == task_id
-                and task.get("consumer_id") == CONSUMER_ID
-            ):
-                task["status"] = "done"
-                break
+    con.commit()
 
-        with open(QUEUE_FILE, "w") as file:
-            for task in tasks:
-                file.write(
-                    json.dumps(task) + "\n"
-                )
+    if cur.rowcount == 1:
+        print("Finished:", task_id)
+    else:
+        print("Could not finish:", task_id)
 
 def execute_task(task):
     time.sleep(TASK_DURATION)

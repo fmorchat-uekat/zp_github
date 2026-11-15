@@ -1,8 +1,8 @@
-import json
 import uuid
+import sqlite3
 
-QUEUE_FILE = "work.txt"
-
+con = sqlite3.connect('database.db')
+cur = con.cursor()
 
 def produce_task():
     task = {
@@ -11,12 +11,13 @@ def produce_task():
         "status": "pending"
     }
 
-    with open(QUEUE_FILE, "a") as file:
-        file.write(json.dumps(task) + "\n")
+    cur.execute(f"INSERT INTO tasks VALUES('"
+                f"{task.get('id')}','"
+                f"{task.get('task')}','"
+                f"{task.get('status')}',NULL)")
+    con.commit()
 
     print(f"Dodano zadanie: {task['id']}")
 
-
 if __name__ == "__main__":
-    for i in range(100):
-        produce_task()
+    produce_task()
